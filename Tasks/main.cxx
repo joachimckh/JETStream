@@ -49,8 +49,8 @@ int main(int argc, char *argv[]) {
 
     for (const auto & track : pythia.event) {
       if (track.isFinal()) {
-        event->setEvProperties(track.px(), track.py(),
-                               track.pz(), track.e());
+        event->setTrack(track.px(), track.py(),
+                        track.pz(), track.e());
 
         particles.push_back(
             PseudoJet(track.px(), track.py(),
@@ -69,7 +69,7 @@ int main(int argc, char *argv[]) {
     ClusterSequence cs(particles, jetDef);
     std::vector<PseudoJet> jets = sorted_by_pt(cs.inclusive_jets(minJetPt));
     for (const auto &jet : jets) {
-      event->setJet(jet.pt(), jet.eta(), jet.phi(), jet.e(), jet.m(), 0);
+      event->setJet(jet.pt(), jet.eta(), jet.phi(), jet.e(), jet.m(), JetType::antikt);
     }
 
     /* kt */
@@ -77,7 +77,7 @@ int main(int argc, char *argv[]) {
     ClusterSequence cs_kt(particles, jetDef_kt);
     std::vector<PseudoJet> jets_kt = sorted_by_pt(cs_kt.inclusive_jets(minJetPt));
     for (const auto &jet : jets_kt) {
-      event->setJet(jet.pt(), jet.eta(), jet.phi(), jet.e(), jet.m(), 1);
+      event->setJet(jet.pt(), jet.eta(), jet.phi(), jet.e(), jet.m(), JetType::kt);
     }
 
     /* Cambridge/Aachen */
@@ -85,7 +85,7 @@ int main(int argc, char *argv[]) {
     ClusterSequence cs_cambridge(particles, jetDef_cambridge);
     std::vector<PseudoJet> jets_cambridge = sorted_by_pt(cs_cambridge.inclusive_jets(minJetPt));
     for (const auto &jet : jets_cambridge) {
-      event->setJet(jet.pt(), jet.eta(), jet.phi(), jet.e(), jet.m(), 2);
+      event->setJet(jet.pt(), jet.eta(), jet.phi(), jet.e(), jet.m(), JetType::cambridge);
     }
 
     /* SISCone */
@@ -94,7 +94,7 @@ int main(int argc, char *argv[]) {
     // ClusterSequence cs_sis(particles, jetDef_sis);
     // std::vector<PseudoJet> jets_sis = sorted_by_pt(cs_sis.inclusive_jets(minJetPt));
     // for (const auto &jet : jets_sis) {
-    //   event->setJet(jet.pt(), jet.eta(), jet.phi(), jet.e(), jet.m(), 3);
+    //   event->setJet(jet.pt(), jet.eta(), jet.phi(), jet.e(), jet.m(), JetType::siscone);
     // }
 
     tree->Fill();

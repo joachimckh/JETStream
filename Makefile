@@ -11,35 +11,38 @@ INCLUDES += $(PYINC)
 CXXFLAGS := $(CXXWARNINGS) $(CXXSTD) $(CXXOPT) $(INCLUDES)
 LDFLAGS := -L$(PYTHIA8)/lib -lpythia8 -L$(FASTJET)/lib -lfastjet
 LDFLAGS += -Wl,-rpath,$(PYTHIA8)/lib
-CROOTFLAGS := `root-config --cflags`
-LROOTFLAGS := `root-config --glibs`
+
+CROOTFLAGS := $(shell root-config --cflags)
+LROOTFLAGS := $(shell root-config --glibs)
 CXXFLAGS += $(CROOTFLAGS)
 LDFLAGS += $(LROOTFLAGS)
 
 SRC_DIR := Core/src
-
 SOURCES := Tasks/main.cxx $(wildcard $(SRC_DIR)/*.cxx)
-
 OBJECTS := $(patsubst %.cxx, %.o, $(SOURCES)) CoreDict.o
 
+TARGET_EXE := main
+TARGET_LIB := libPythiaEvent.so
 .PHONY: all clean
 
-all: main
+all: $(TARGET_EXE) $(TARGET_LIB)
 
-main: $(OBJECTS)
+$(TARGET_EXE): $(OBJECTS) $(TARGET_LIB)
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
+$(TARGET_LIB): $(SRC_DIR)/PythiaEvent.o CoreDict.o
+	$(CXX) $(CXXFLAGS) -shared -fPIC -o $@ $(SRC_DIR)/PythiaEvent.o CoreDict.o $(LDFLAGS)
 $(SRC_DIR)/%.o: $(SRC_DIR)/%.cxx
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) -fPIC -c $< -o $@
 
 %.o: %.cxx
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) -fPIC -c $< -o $@
 
 CoreDict.cxx: Core/include/PythiaEvent.h Core/include/CoreLinkDef.h
 	rootcling -f CoreDict.cxx -c Core/include/PythiaEvent.h Core/include/CoreLinkDef.h
 
 CoreDict.o: CoreDict.cxx
-	$(CXX) $(CXXFLAGS) -c CoreDict.cxx -o CoreDict.o
+	$(CXX) $(CXXFLAGS) -fPIC -c CoreDict.cxx -o CoreDict.o
 
 clean:
-	rm -v $(SRC_DIR)/*.o Tasks/*.o main CoreDict.cxx CoreDict_rdict.pcm CoreDict.o
+	rm -v $(SRC_DIR)/*.o Tasks/*.o $(TARGET_EXE) $(TARGET_LIB) CoreDict.cxx CoreDict_rdict.pcm CoreDict.o
