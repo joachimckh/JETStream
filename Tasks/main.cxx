@@ -1,9 +1,9 @@
 #include "Pythia8/Pythia.h"
 #include "fastjet/ClusterSequence.hh"
 
+#include <cstdlib>
 #include <iostream>
 #include <vector>
-#include <cstdlib>
 
 #include "PythiaEvent.h"
 #include <TFile.h>
@@ -12,7 +12,7 @@
 using namespace Pythia8;
 using namespace fastjet;
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
 
   int nEvents = 5000;
   if (argc > 1) {
@@ -22,7 +22,7 @@ int main(int argc, char* argv[]) {
       nEvents = 5000;
     }
   }
-  
+
   Pythia pythia;
   pythia.readString("Beams:idA = 2212");    // proton
   pythia.readString("Beams:idB = 2212");    // proton
@@ -58,7 +58,7 @@ int main(int argc, char* argv[]) {
 
     if (particles.size() < 2)
       continue;
-    
+
     JetDefinition jetDef(antikt_algorithm, R);
     ClusterSequence cs(particles, jetDef);
 
