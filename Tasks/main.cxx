@@ -45,14 +45,14 @@ int main(int argc, char *argv[]) {
 
     std::vector<PseudoJet> particles;
 
-    for (int i{0}; i < pythia.event.size(); i++) {
-      if (pythia.event[i].isFinal()) {
-        event->setEvProperties(pythia.event[i].px(), pythia.event[i].py(),
-                               pythia.event[i].pz(), pythia.event[i].e());
+    for (const auto & track : pythia.event) {
+      if (track.isFinal()) {
+        event->setEvProperties(track.px(), track.py(),
+                               track.pz(), track.e());
 
         particles.push_back(
-            PseudoJet(pythia.event[i].px(), pythia.event[i].py(),
-                      pythia.event[i].pz(), pythia.event[i].e()));
+            PseudoJet(track.px(), track.py(),
+                      track.pz(), track.e()));
       }
     }
 
