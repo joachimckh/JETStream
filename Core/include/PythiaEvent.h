@@ -6,12 +6,21 @@
 
 using std::vector;
 
-struct Jet {
-  std::vector<float> pt;
-  std::vector<float> eta;
-  std::vector<float> phi;
-  std::vector<float> energy;
-  std::vector<float> mass;
+enum class JetType {
+  antikt,
+  kt,
+  cambridge,
+  siscone
+};
+
+struct Jet : public TObject {
+  Jet() = default;
+  virtual ~Jet() {}
+  vector<float> pt;
+  vector<float> eta;
+  vector<float> phi;
+  vector<float> energy;
+  vector<float> mass;
 
   void setJet(float pt, float eta, float phi, float energy, float mass) {
     this->pt.push_back(pt);
@@ -20,6 +29,8 @@ struct Jet {
     this->energy.push_back(energy);
     this->mass.push_back(mass);
   }
+
+  ClassDefNV(Jet, 1);
 };
 
 class PythiaEvent : public TObject {
@@ -28,27 +39,19 @@ public:
   PythiaEvent(int evNumber);
   virtual ~PythiaEvent();
 
-  void setEnergy(float e) { energy.push_back(e); }
-  void setEvProperties(float x, float y, float z, float e);
-  
-  void setJet(float pt, float eta, float phi, float energy, float mass, int jetType);
+  void setTrack(float px, float py, float pz, float energy);
+  void setJet(float pt, float eta, float phi, float energy, float mass, JetType jetType);
+
+  Jet getJet() const { return antiktJet; }
 
 private:
   int eventNumber;
-  vector<float> px;
-  vector<float> py;
-  vector<float> pz;
-  vector<float> energy;
-
+  vector<float> px, py, pz, energy;
+  
   Jet antiktJet;
   Jet ktJet;
   Jet cambridgeJet;
-  Jet sisconeJet;
-
-  void setPx(float x) { px.push_back(x); }
-  void setPy(float y) { py.push_back(y); }
-  void setPz(float z) { pz.push_back(z); }
-  
+  Jet sisconeJet;  
 
   ClassDef(PythiaEvent, 1);
 };
