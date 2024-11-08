@@ -1,5 +1,6 @@
 #include "Pythia8/Pythia.h"
 #include "fastjet/ClusterSequence.hh"
+#include "fastjet/SISConePlugin.hh"
 
 #include <cstdlib>
 #include <iostream>
@@ -37,6 +38,7 @@ int main(int argc, char *argv[]) {
 
   constexpr double R = 0.4;
   constexpr double minJetPt = 5.0;
+  // constexpr double overlap = 0.5;
 
   for (int iEvent{0}; iEvent < nEvents; iEvent++) {
     if (!pythia.next())
@@ -59,16 +61,42 @@ int main(int argc, char *argv[]) {
     if (particles.size() < 2)
       continue;
 
-    JetDefinition jetDef(antikt_algorithm, R);
+     
+    
+    
+    /* anti kt*/
+    JetDefinition jetDef(antikt_algorithm, R); 
     ClusterSequence cs(particles, jetDef);
-
-    std::vector<PseudoJet> jets =
-        sorted_by_pt(cs.inclusive_jets(minJetPt)); /* min jet pt */
-
+    std::vector<PseudoJet> jets = sorted_by_pt(cs.inclusive_jets(minJetPt));
     for (const auto &jet : jets) {
-      event->setJetProperties(jet.pt(), jet.eta(),
-                              jet.phi());
+      event->setJet(jet.pt(), jet.eta(), jet.phi(), jet.e(), jet.m(), 0);
     }
+
+    /* kt */
+    JetDefinition jetDef_kt(kt_algorithm, R); 
+    ClusterSequence cs_kt(particles, jetDef_kt);
+    std::vector<PseudoJet> jets_kt = sorted_by_pt(cs_kt.inclusive_jets(minJetPt));
+    for (const auto &jet : jets_kt) {
+      event->setJet(jet.pt(), jet.eta(), jet.phi(), jet.e(), jet.m(), 1);
+    }
+
+    /* Cambridge/Aachen */
+    JetDefinition jetDef_cambridge(kt_algorithm, R);
+    ClusterSequence cs_cambridge(particles, jetDef_cambridge);
+    std::vector<PseudoJet> jets_cambridge = sorted_by_pt(cs_cambridge.inclusive_jets(minJetPt));
+    for (const auto &jet : jets_cambridge) {
+      event->setJet(jet.pt(), jet.eta(), jet.phi(), jet.e(), jet.m(), 2);
+    }
+
+    /* SISCone */
+    // SISConePlugin plugin(R, overlap);
+    // JetDefinition jetDef_sis(&plugin);
+    // ClusterSequence cs_sis(particles, jetDef_sis);
+    // std::vector<PseudoJet> jets_sis = sorted_by_pt(cs_sis.inclusive_jets(minJetPt));
+    // for (const auto &jet : jets_sis) {
+    //   event->setJet(jet.pt(), jet.eta(), jet.phi(), jet.e(), jet.m(), 3);
+    // }
+
     tree->Fill();
     delete event;
   }

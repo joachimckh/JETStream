@@ -6,6 +6,22 @@
 
 using std::vector;
 
+struct Jet {
+  std::vector<float> pt;
+  std::vector<float> eta;
+  std::vector<float> phi;
+  std::vector<float> energy;
+  std::vector<float> mass;
+
+  void setJet(float pt, float eta, float phi, float energy, float mass) {
+    this->pt.push_back(pt);
+    this->eta.push_back(eta);
+    this->phi.push_back(phi);
+    this->energy.push_back(energy);
+    this->mass.push_back(mass);
+  }
+};
+
 class PythiaEvent : public TObject {
 public:
   PythiaEvent();
@@ -14,7 +30,8 @@ public:
 
   void setEnergy(float e) { energy.push_back(e); }
   void setEvProperties(float x, float y, float z, float e);
-  void setJetProperties(float pt, float eta, float phi);
+  
+  void setJet(float pt, float eta, float phi, float energy, float mass, int jetType);
 
 private:
   int eventNumber;
@@ -23,16 +40,15 @@ private:
   vector<float> pz;
   vector<float> energy;
 
-  vector<float> jet_pt;
-  vector<float> jet_eta;
-  vector<float> jet_phi;
+  Jet antiktJet;
+  Jet ktJet;
+  Jet cambridgeJet;
+  Jet sisconeJet;
 
   void setPx(float x) { px.push_back(x); }
   void setPy(float y) { py.push_back(y); }
   void setPz(float z) { pz.push_back(z); }
-  void setJetPt(float pt) { jet_pt.push_back(pt); }
-  void setJetEta(float eta) { jet_eta.push_back(eta); }
-  void setJetPhi(float phi) { jet_phi.push_back(phi); }
+  
 
   ClassDef(PythiaEvent, 1);
 };

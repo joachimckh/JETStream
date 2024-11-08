@@ -1,5 +1,5 @@
 CXX := g++
-CXXWARNINGS := -Wall -Wextra -Werror
+CXXWARNINGS := -Wall -Wextra -Werror -Wno-deprecated-copy
 CXXOPT := -O2
 CXXSTD := -std=c++20
 INCLUDES := -I Core/include

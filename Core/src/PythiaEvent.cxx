@@ -21,8 +21,21 @@ void PythiaEvent::setEvProperties(float x, float y, float z, float e) {
   setEnergy(e);
 };
 
-void PythiaEvent::setJetProperties(float pt, float eta, float phi) {
-  setJetPt(pt);
-  setJetEta(eta);
-  setJetPhi(phi);
+void PythiaEvent::setJet(float pt, float eta, float phi, float energy, float mass, int jetType) {
+  switch (jetType) {
+    case 0:
+      antiktJet.setJet(pt, eta, phi, energy, mass);
+      break;
+    case 1:
+      ktJet.setJet(pt, eta, phi, energy, mass);
+      break;
+    case 2:
+      cambridgeJet.setJet(pt, eta, phi, energy, mass);
+      break;
+    case 3:
+      sisconeJet.setJet(pt, eta, phi, energy, mass);
+      break;
+    default:
+      break;
+  }
 };
