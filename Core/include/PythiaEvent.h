@@ -6,12 +6,7 @@
 
 using std::vector;
 
-enum class JetType {
-  antikt,
-  kt,
-  cambridge,
-  siscone
-};
+enum class JetType { antikt, kt, cambridge, siscone };
 
 struct Jet : public TObject {
   Jet() = default;
@@ -40,18 +35,19 @@ public:
   virtual ~PythiaEvent();
 
   void setTrack(float px, float py, float pz, float energy);
-  void setJet(float pt, float eta, float phi, float energy, float mass, JetType jetType);
+  void setJet(float pt, float eta, float phi, float energy, float mass,
+              JetType jetType);
 
   Jet getJet() const { return antiktJet; }
 
 private:
   int eventNumber;
   vector<float> px, py, pz, energy;
-  
+
   Jet antiktJet;
   Jet ktJet;
   Jet cambridgeJet;
-  Jet sisconeJet;  
+  Jet sisconeJet;
 
   ClassDef(PythiaEvent, 1);
 };
