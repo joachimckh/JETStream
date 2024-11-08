@@ -65,13 +65,9 @@ int main(int argc, char *argv[]) {
     std::vector<PseudoJet> jets =
         sorted_by_pt(cs.inclusive_jets(minJetPt)); /* min jet pt */
 
-    // std::cout << "Event #" << iEvent << " has " << jets.size() << " jets:\n";
     for (const auto &jet : jets) {
       event->setJetProperties(jet.pt(), jet.eta(),
                               jet.phi());
-      // std::cout << "  Jet " << iJet + 1 << ": pt = " << jets[iJet].pt()
-      //           << ", eta = " << jets[iJet].eta()
-      //           << ", phi = " << jets[iJet].phi() << "\n";
     }
     tree->Fill();
     delete event;
