@@ -18,19 +18,17 @@ class dJETStream(Dataset):
     self._entries = self.tree.GetEntries()
 
   def __len__(self):
-    return len(self._entries)
+    return self._entries
 
   def __getitem__(self, idx):
     self.tree.GetEntry(idx)
     # event = self.tree.event
     input = np.array([self.tree.px, self.tree.py, self.tree.pz, self.tree.energy])
 
-    # x = self.X[idx,:]
-    # y = self.y[idx,:]
+    # jet_antikt = np.array([self.tree.antiktJet.pt, self.tree.antiktJet.eta, self.tree.antiktJet.phi, self.antiktJet.energy, self.tree.antiktJet.mass])
+    # jet_kt = np.array([self.tree.ktJet.pt, self.tree.ktJet.eta, self.tree.ktJet.phi, self.ktJet.energy, self.tree.ktJet.mass])
+    # jet_cambridge = np.array([self.tree.cambridgeJet.pt, self.tree.cambridgeJet.eta, self.tree.cambridgeJet.phi, self.cambridgeJet.energy, self.tree.cambridgeJet.mass])
 
-    # if self.transform:
-    #   x = self._transform(x)
-    #   y = self._transform(y)
 
     # # x_tensor = torch.tensor(x,dtype=torch.float64)
     # # y_tensor = torch.tensor(y,dtype=torch.float64)
@@ -38,7 +36,7 @@ class dJETStream(Dataset):
     # y_tensor = torch.from_numpy(y).float()
 
 
-    return input
+    return self.tree.px
 
   # def _transform(self,array):
   #   return (array - array.min())/(array.max()-array.min())
@@ -46,7 +44,8 @@ class dJETStream(Dataset):
   # def _shape(self,):
   #   return self.X[2,:].shape[0]
   
-
+  def getEntries(self):
+    return self._entries
 
 if __name__=="__main__":
   dataset = dJETStream()

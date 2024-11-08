@@ -38,11 +38,14 @@ public:
   void setJet(float pt, float eta, float phi, float energy, float mass,
               JetType jetType);
 
-  Jet getJet() const { return antiktJet; }
+  Jet getJet(JetType jetType) const;
+  void setJetFound(bool jetFound) { this->jetFound = jetFound; }
+  bool isJetFound() const { return jetFound; }
 
 private:
   int eventNumber;
   vector<float> px, py, pz, energy;
+  bool jetFound;
 
   Jet antiktJet;
   Jet ktJet;
