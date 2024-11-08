@@ -25,15 +25,17 @@ int main() {
   tree->Branch("event", &event);
 
   constexpr int numEvents = 5000;
+  constexpr double R = 0.4;
+  constexpr double minJetPt = 5.0;
 
-  for (int iEvent = 0; iEvent < numEvents; iEvent++) {
+  for (int iEvent{0}; iEvent < numEvents; iEvent++) {
     if (!pythia.next())
       continue;
     event = new PythiaEvent(iEvent);
 
     std::vector<PseudoJet> particles;
 
-    for (int i = 0; i < pythia.event.size(); i++) {
+    for (int i{0}; i < pythia.event.size(); i++) {
       if (pythia.event[i].isFinal()) {
         event->setEvProperties(pythia.event[i].px(), pythia.event[i].py(),
                                pythia.event[i].pz(), pythia.event[i].e());
@@ -46,18 +48,20 @@ int main() {
 
     if (particles.size() < 2)
       continue;
-    double R = 0.4;
+    
     JetDefinition jetDef(antikt_algorithm, R);
     ClusterSequence cs(particles, jetDef);
 
     std::vector<PseudoJet> jets =
-        sorted_by_pt(cs.inclusive_jets(5.0)); /* min jet pt */
+        sorted_by_pt(cs.inclusive_jets(minJetPt)); /* min jet pt */
 
-    std::cout << "Event #" << iEvent << " has " << jets.size() << " jets:\n";
-    for (size_t iJet = 0; iJet < jets.size(); iJet++) {
-      std::cout << "  Jet " << iJet + 1 << ": pt = " << jets[iJet].pt()
-                << ", eta = " << jets[iJet].eta()
-                << ", phi = " << jets[iJet].phi() << "\n";
+    // std::cout << "Event #" << iEvent << " has " << jets.size() << " jets:\n";
+    for (size_t iJet{0}; iJet < jets.size(); iJet++) {
+      event->setJetProperties(jets[iJet].pt(), jets[iJet].eta(),
+                              jets[iJet].phi());
+      // std::cout << "  Jet " << iJet + 1 << ": pt = " << jets[iJet].pt()
+      //           << ", eta = " << jets[iJet].eta()
+      //           << ", phi = " << jets[iJet].phi() << "\n";
     }
     tree->Fill();
     delete event;
