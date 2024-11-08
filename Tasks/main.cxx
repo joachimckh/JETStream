@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <vector>
+#include <cstdlib>
 
 #include "PythiaEvent.h"
 #include <TFile.h>
@@ -11,7 +12,17 @@
 using namespace Pythia8;
 using namespace fastjet;
 
-int main() {
+int main(int argc, char* argv[]) {
+
+  int nEvents = 5000;
+  if (argc > 1) {
+    nEvents = std::atoi(argv[1]);
+    if (nEvents <= 0) {
+      std::cerr << "Invalid number of events specified. Using default: 5000\n";
+      nEvents = 5000;
+    }
+  }
+  
   Pythia pythia;
   pythia.readString("Beams:idA = 2212");    // proton
   pythia.readString("Beams:idB = 2212");    // proton
@@ -24,11 +35,10 @@ int main() {
   PythiaEvent *event{nullptr};
   tree->Branch("event", &event);
 
-  constexpr int numEvents = 5000;
   constexpr double R = 0.4;
   constexpr double minJetPt = 5.0;
 
-  for (int iEvent{0}; iEvent < numEvents; iEvent++) {
+  for (int iEvent{0}; iEvent < nEvents; iEvent++) {
     if (!pythia.next())
       continue;
     event = new PythiaEvent(iEvent);
