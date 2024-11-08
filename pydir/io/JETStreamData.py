@@ -1,35 +1,30 @@
 import sys,os
 
 import numpy as np
-import pandas as pd
 
 import torch
-from torch.utils.data import Dataset,IterableDataset
+from torch.utils.data import Dataset
 import torch.nn.functional as F
-import operator
-import copy
 
 import ROOT
-ROOT.gInterpreter.ProcessLine('#include "../../Core/include/PythiaEvent.h"')
+ROOT.gSystem.Load("../../libPythiaEvent.so")
 
 class dJETStream(Dataset):
-  def __init__(self, file_path="../../tree.root",tree_name="tree", transform=False,np_data=True):
+  def __init__(self, file_path="../../tmp.root",tree_name="tree", transform=False,np_data=True):
 
     self.file = ROOT.TFile(file_path)
-    self.tree = self.file.Get("%s".format(tree_name))
+    self.tree = self.file.Get(tree_name)
 
     self._entries = self.tree.GetEntries()
-    # self.X = DataHandler(tracks_path,np_data)
-    # self.y = SeparatedDataHandler(mov_path,np_data)['xamP'][:,2:]
-    # self.transform = transform
-
-  def _ROOT_Constructor(self):
-    self.pt = ROOT.std.vector('float')()
 
   def __len__(self):
-    return len(self.X)
+    return len(self._entries)
 
   def __getitem__(self, idx):
+    self.tree.GetEntry(idx)
+    # event = self.tree.event
+    input = np.array([self.tree.px, self.tree.py, self.tree.pz, self.tree.energy])
+
     # x = self.X[idx,:]
     # y = self.y[idx,:]
 
@@ -43,13 +38,21 @@ class dJETStream(Dataset):
     # y_tensor = torch.from_numpy(y).float()
 
 
-    return 0
+    return input
 
   # def _transform(self,array):
   #   return (array - array.min())/(array.max()-array.min())
 
   # def _shape(self,):
   #   return self.X[2,:].shape[0]
-  def getEntries(self):
-    return self._entries
   
+
+
+if __name__=="__main__":
+  dataset = dJETStream()
+  print(dataset.getEntries())
+  
+  tmp = dataset.__getitem__(3)
+  print("#"*10)
+  print("data: ",tmp)
+  print("-"*10)

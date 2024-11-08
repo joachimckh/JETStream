@@ -47,54 +47,56 @@ int main(int argc, char *argv[]) {
 
     std::vector<PseudoJet> particles;
 
-    for (const auto & track : pythia.event) {
+    for (const auto &track : pythia.event) {
       if (track.isFinal()) {
-        event->setTrack(track.px(), track.py(),
-                        track.pz(), track.e());
+        event->setTrack(track.px(), track.py(), track.pz(), track.e());
 
         particles.push_back(
-            PseudoJet(track.px(), track.py(),
-                      track.pz(), track.e()));
+            PseudoJet(track.px(), track.py(), track.pz(), track.e()));
       }
     }
 
     if (particles.size() < 2)
       continue;
 
-     
-    
-    
     /* anti kt*/
-    JetDefinition jetDef(antikt_algorithm, R); 
+    JetDefinition jetDef(antikt_algorithm, R);
     ClusterSequence cs(particles, jetDef);
     std::vector<PseudoJet> jets = sorted_by_pt(cs.inclusive_jets(minJetPt));
     for (const auto &jet : jets) {
-      event->setJet(jet.pt(), jet.eta(), jet.phi(), jet.e(), jet.m(), JetType::antikt);
+      event->setJet(jet.pt(), jet.eta(), jet.phi(), jet.e(), jet.m(),
+                    JetType::antikt);
     }
 
     /* kt */
-    JetDefinition jetDef_kt(kt_algorithm, R); 
+    JetDefinition jetDef_kt(kt_algorithm, R);
     ClusterSequence cs_kt(particles, jetDef_kt);
-    std::vector<PseudoJet> jets_kt = sorted_by_pt(cs_kt.inclusive_jets(minJetPt));
+    std::vector<PseudoJet> jets_kt =
+        sorted_by_pt(cs_kt.inclusive_jets(minJetPt));
     for (const auto &jet : jets_kt) {
-      event->setJet(jet.pt(), jet.eta(), jet.phi(), jet.e(), jet.m(), JetType::kt);
+      event->setJet(jet.pt(), jet.eta(), jet.phi(), jet.e(), jet.m(),
+                    JetType::kt);
     }
 
     /* Cambridge/Aachen */
     JetDefinition jetDef_cambridge(kt_algorithm, R);
     ClusterSequence cs_cambridge(particles, jetDef_cambridge);
-    std::vector<PseudoJet> jets_cambridge = sorted_by_pt(cs_cambridge.inclusive_jets(minJetPt));
+    std::vector<PseudoJet> jets_cambridge =
+        sorted_by_pt(cs_cambridge.inclusive_jets(minJetPt));
     for (const auto &jet : jets_cambridge) {
-      event->setJet(jet.pt(), jet.eta(), jet.phi(), jet.e(), jet.m(), JetType::cambridge);
+      event->setJet(jet.pt(), jet.eta(), jet.phi(), jet.e(), jet.m(),
+                    JetType::cambridge);
     }
 
     /* SISCone */
     // SISConePlugin plugin(R, overlap);
     // JetDefinition jetDef_sis(&plugin);
     // ClusterSequence cs_sis(particles, jetDef_sis);
-    // std::vector<PseudoJet> jets_sis = sorted_by_pt(cs_sis.inclusive_jets(minJetPt));
-    // for (const auto &jet : jets_sis) {
-    //   event->setJet(jet.pt(), jet.eta(), jet.phi(), jet.e(), jet.m(), JetType::siscone);
+    // std::vector<PseudoJet> jets_sis =
+    // sorted_by_pt(cs_sis.inclusive_jets(minJetPt)); for (const auto &jet :
+    // jets_sis) {
+    //   event->setJet(jet.pt(), jet.eta(), jet.phi(), jet.e(), jet.m(),
+    //   JetType::siscone);
     // }
 
     tree->Fill();
