@@ -42,6 +42,12 @@ public:
   void setJetFound(bool jetFound) { this->jetFound = jetFound; }
   bool isJetFound() const { return jetFound; }
 
+  vector<float> getTrackPx() const { return px; }
+  vector<float> getTrackPy() const { return py; }
+  vector<float> getTrackPz() const { return pz; }
+  vector<float> getTrackEnergy() const { return energy; }
+
+
 private:
   int eventNumber;
   vector<float> px, py, pz, energy;
