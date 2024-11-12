@@ -4,11 +4,14 @@ hyper_params:
   learning_rate: 0.001
 
 training:
-  epochs: 1
-  log_interval: 10
+  epochs: 5
+  verbose: True
+  log_interval: 1
+  save_model: False
 
 paths:
-  data_dir: data/
+  data_train: train.root
+  data_valid: validation.root
   model_dir: model/
   log_dir: log/
   result_dir: result/
