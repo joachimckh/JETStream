@@ -67,6 +67,9 @@ int main(int argc, char *argv[]) {
       event->setJet(jet.pt(), jet.eta(), jet.phi(), jet.e(), jet.m(),
                     JetType::antikt);
     }
+    if (jets.size() > 0) {
+      event->setJetFound(true);
+    }
 
     /* kt */
     JetDefinition jetDef_kt(kt_algorithm, R);

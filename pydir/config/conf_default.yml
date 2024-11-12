@@ -1,0 +1,18 @@
+hyper_params:
+  batch_size: 1
+  hidden_dim: 32
+  learning_rate: 0.001
+
+training:
+  epochs: 1
+  log_interval: 10
+
+paths:
+  data_dir: data/
+  model_dir: model/
+  log_dir: log/
+  result_dir: result/
+  config_dir: config/
+  checkpoint_dir: checkpoint/
+  checkpoint_name: checkpoint.pth
+

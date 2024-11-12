@@ -1,14 +1,14 @@
 #include "PythiaEvent.h"
 
-ClassImp(PythiaEvent) ClassImp(Jet);
+ClassImp(PythiaEvent);
+ClassImp(Jet);
 
 PythiaEvent::PythiaEvent()
-    : TObject(), eventNumber(0), px(0), py(0), pz(0), energy(0) {
+    : TObject(), eventNumber(0), px(0), py(0), pz(0), energy(0), jetFound(false) {};
 
-      };
 
 PythiaEvent::PythiaEvent(int evNumber)
-    : TObject(), eventNumber(evNumber), px(0), py(0), pz(0), energy(0) {};
+    : TObject(), eventNumber(evNumber), px(0), py(0), pz(0), energy(0), jetFound(false) {};
 
 PythiaEvent::~PythiaEvent() {};
 
@@ -38,3 +38,24 @@ void PythiaEvent::setJet(float pt, float eta, float phi, float energy,
     break;
   }
 };
+
+Jet PythiaEvent::getJet(JetType jetType) const
+{
+  switch (jetType) {
+  case JetType::antikt:
+    return antiktJet;
+    break;
+  case JetType::kt:
+    return ktJet;
+    break;
+  case JetType::cambridge:
+    return cambridgeJet;
+    break;
+  case JetType::siscone:
+    return sisconeJet;
+    break;
+  default:
+    break;
+  }
+};
+

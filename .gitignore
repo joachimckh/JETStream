@@ -42,4 +42,4 @@ rootlogon.*
 .vscode
 __init__.py
 *.pyc
-test
+pydir/test/
