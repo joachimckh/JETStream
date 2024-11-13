@@ -2,6 +2,9 @@ hyper_params:
   batch_size: 1
   hidden_dim: 32
   learning_rate: 0.001
+  gamma: 0.7
+  epoch_lr_step: 5
+  jet_penaltyfactor: 0.1
 
 training:
   epochs: 5
@@ -12,10 +15,8 @@ training:
 paths:
   data_train: train.root
   data_valid: validation.root
-  model_dir: model/
-  log_dir: log/
-  result_dir: result/
-  config_dir: config/
-  checkpoint_dir: checkpoint/
-  checkpoint_name: checkpoint.pth
+  model: model/JetGNN.pth
+  log_dir: model/log/
 
+analysis:
+  n_jets: 20

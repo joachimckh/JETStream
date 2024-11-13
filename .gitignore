@@ -43,3 +43,4 @@ rootlogon.*
 __init__.py
 *.pyc
 pydir/test/
+model/
