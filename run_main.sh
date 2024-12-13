@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Default parameter values
-nEvents=5000
+nEvents=50000
 file_name="train.root"
 # Parse command-line arguments
 while [[ "$#" -gt 0 ]]; do

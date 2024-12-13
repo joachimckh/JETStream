@@ -72,6 +72,10 @@ int main(int argc, char *argv[]) {
     if (jets.size() > 0) {
       event->setJetFound(true);
     }
+    else {
+      delete event;
+      continue;
+    }
 
     /* kt */
     JetDefinition jetDef_kt(kt_algorithm, R);
