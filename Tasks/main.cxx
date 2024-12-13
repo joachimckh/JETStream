@@ -15,13 +15,15 @@ using namespace fastjet;
 
 int main(int argc, char *argv[]) {
 
-  int nEvents = 5000;
+  int nEvents{5000};
+  const char* file_name{"tmp.root"};
   if (argc > 1) {
     nEvents = std::atoi(argv[1]);
     if (nEvents <= 0) {
       std::cerr << "Invalid number of events specified. Using default: 5000\n";
       nEvents = 5000;
     }
+    file_name = argv[2];
   }
 
   Pythia pythia;
@@ -31,7 +33,7 @@ int main(int argc, char *argv[]) {
   pythia.readString("HardQCD:all = on"); // Enable QCD processes to produce jets
   pythia.init();
 
-  auto tfile = new TFile("tmp.root", "RECREATE");
+  auto tfile = new TFile(Form("%s",file_name), "RECREATE");
   TTree *tree = new TTree("tree", "Pythia Event Tree");
   PythiaEvent *event{nullptr};
   tree->Branch("event", &event);
@@ -69,6 +71,10 @@ int main(int argc, char *argv[]) {
     }
     if (jets.size() > 0) {
       event->setJetFound(true);
+    }
+    else {
+      delete event;
+      continue;
     }
 
     /* kt */
