@@ -1,4 +1,4 @@
-#include "PythiaEvent.h"
+#include "PythiaEvent.hpp"
 
 ClassImp(PythiaEvent);
 ClassImp(Jet);

@@ -1,5 +1,4 @@
-#ifndef PYTHIAEVENT_H
-#define PYTHIAEVENT_H
+#pragma once
 
 #include <TObject.h>
 #include <vector>
@@ -60,5 +59,3 @@ private:
 
   ClassDef(PythiaEvent, 1);
 };
-
-#endif // PYTHIAEVENT_H

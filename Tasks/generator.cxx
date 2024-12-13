@@ -5,10 +5,10 @@
 #include <cstdlib>
 #include <iostream>
 #include <vector>
-
-#include "PythiaEvent.h"
 #include <TFile.h>
 #include <TTree.h>
+
+#include "PythiaEvent.hpp"
 
 using namespace Pythia8;
 using namespace fastjet;

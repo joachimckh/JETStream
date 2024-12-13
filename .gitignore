@@ -35,15 +35,14 @@
 *.pcm
 *.root
 *Dict.cxx
-
-# for now the makefile is not ready
-main
 rootlogon.*
-.vscode
-__init__.py
-*.pyc
-pydir/test/
-model/
 
-old/
+# vscode
+.vscode
+
+# cmake 
 build/
+
+# saved and legacy
+model/
+old/
