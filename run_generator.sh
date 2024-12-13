@@ -15,4 +15,4 @@ done
 
 # Run the main program with the specified parameters
 echo "Running ./main with nEvents=${nEvents} and file_name=${file_name}"
-./main "${nEvents}" "${file_name}"
+./build/Tasks/pythia_generator "${nEvents}" "${file_name}"
