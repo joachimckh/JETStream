@@ -2,13 +2,13 @@
 #include "fastjet/ClusterSequence.hh"
 #include "fastjet/SISConePlugin.hh"
 
+#include <TFile.h>
+#include <TTree.h>
 #include <cstdlib>
 #include <iostream>
 #include <vector>
 
-#include "PythiaEvent.h"
-#include <TFile.h>
-#include <TTree.h>
+#include "PythiaEvent.hpp"
 
 using namespace Pythia8;
 using namespace fastjet;
@@ -16,7 +16,7 @@ using namespace fastjet;
 int main(int argc, char *argv[]) {
 
   int nEvents{5000};
-  const char* file_name{"tmp.root"};
+  const char *file_name{"tmp.root"};
   if (argc > 1) {
     nEvents = std::atoi(argv[1]);
     if (nEvents <= 0) {
@@ -31,17 +31,18 @@ int main(int argc, char *argv[]) {
   pythia.readString("Beams:idB = 2212");    // proton
   pythia.readString("Beams:eCM = 13000.0"); // Center-of-mass energy at 13 TeV
   pythia.readString("HardQCD:all = on"); // Enable QCD processes to produce jets
+  pythia.readString("Next:numberShowEvent = 10000");
   pythia.init();
 
-  auto tfile = new TFile(Form("%s",file_name), "RECREATE");
-  TTree *tree = new TTree("tree", "Pythia Event Tree");
+  auto tfile = new TFile(Form("%s", file_name), "RECREATE");
+  TTree *tree = new TTree("tree", "Pythia Jet Tree");
   PythiaEvent *event{nullptr};
   tree->Branch("event", &event);
 
-  constexpr double R = 0.4;
-  constexpr double minJetPt = 5.0;
-  // constexpr double overlap = 0.5;
+  constexpr double R{0.4};
+  constexpr double minJetPt{10.0};
 
+  int jetsFound{0};
   for (int iEvent{0}; iEvent < nEvents; iEvent++) {
     if (!pythia.next())
       continue;
@@ -49,64 +50,52 @@ int main(int argc, char *argv[]) {
 
     std::vector<PseudoJet> particles;
 
-    for (const auto &track : pythia.event) {
+    double totalEnergy{0.0};
+    for (int iTrack{0}; iTrack < pythia.event.size(); ++iTrack) {
+      const Particle &track = pythia.event[iTrack];
       if (track.isFinal()) {
         event->setTrack(track.px(), track.py(), track.pz(), track.e());
 
-        particles.push_back(
-            PseudoJet(track.px(), track.py(), track.pz(), track.e()));
+        PseudoJet pseudoJet(track.px(), track.py(), track.pz(), track.e());
+        pseudoJet.set_user_index(iTrack);
+        particles.push_back(pseudoJet);
+
+        totalEnergy += track.e();
       }
     }
-
     if (particles.size() < 2)
       continue;
 
-    /* anti kt*/
+    /* anti kt */
     JetDefinition jetDef(antikt_algorithm, R);
     ClusterSequence cs(particles, jetDef);
     std::vector<PseudoJet> jets = sorted_by_pt(cs.inclusive_jets(minJetPt));
-    for (const auto &jet : jets) {
-      event->setJet(jet.pt(), jet.eta(), jet.phi(), jet.e(), jet.m(),
-                    JetType::antikt);
-    }
     if (jets.size() > 0) {
       event->setJetFound(true);
-    }
-    else {
+      jetsFound++;
+    } else {
       delete event;
       continue;
     }
 
-    /* kt */
-    JetDefinition jetDef_kt(kt_algorithm, R);
-    ClusterSequence cs_kt(particles, jetDef_kt);
-    std::vector<PseudoJet> jets_kt =
-        sorted_by_pt(cs_kt.inclusive_jets(minJetPt));
-    for (const auto &jet : jets_kt) {
-      event->setJet(jet.pt(), jet.eta(), jet.phi(), jet.e(), jet.m(),
-                    JetType::kt);
+    // calculate angularity
+    // NSubjettiness tau(1, jetDef);
+    // double tau1 = tau.getTau(jet);
+    double jetEnergy{0.0};
+    for (const auto &jet : jets) {
+      event->setJet(jet.pt(), jet.eta(), jet.phi(), jet.e(), jet.m(), 
+                    JetType::antikt);
+      jetEnergy += jet.e();
+      for (const auto &constituent : jet.constituents()) {
+        int index = constituent.user_index();
+        if (index < 0 || index >= pythia.event.size())
+          continue;
+        const Particle &part = pythia.event[index];
+        float deltaR = jet.delta_R(constituent);
+        event->setJetSubstructure(index, constituent.pt(), constituent.e(), part.id(), deltaR, JetType::antikt);
+      }
     }
-
-    /* Cambridge/Aachen */
-    JetDefinition jetDef_cambridge(kt_algorithm, R);
-    ClusterSequence cs_cambridge(particles, jetDef_cambridge);
-    std::vector<PseudoJet> jets_cambridge =
-        sorted_by_pt(cs_cambridge.inclusive_jets(minJetPt));
-    for (const auto &jet : jets_cambridge) {
-      event->setJet(jet.pt(), jet.eta(), jet.phi(), jet.e(), jet.m(),
-                    JetType::cambridge);
-    }
-
-    /* SISCone */
-    // SISConePlugin plugin(R, overlap);
-    // JetDefinition jetDef_sis(&plugin);
-    // ClusterSequence cs_sis(particles, jetDef_sis);
-    // std::vector<PseudoJet> jets_sis =
-    // sorted_by_pt(cs_sis.inclusive_jets(minJetPt)); for (const auto &jet :
-    // jets_sis) {
-    //   event->setJet(jet.pt(), jet.eta(), jet.phi(), jet.e(), jet.m(),
-    //   JetType::siscone);
-    // }
+    event->setEnergyFraction(jetEnergy / totalEnergy);
 
     tree->Fill();
     delete event;
@@ -116,6 +105,7 @@ int main(int argc, char *argv[]) {
   tfile->Close();
 
   pythia.stat();
+  std::cout << "Number of events with jets: " << jetsFound << "/" << nEvents << std::endl;
 
   return 0;
 }

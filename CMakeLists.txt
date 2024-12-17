@@ -6,8 +6,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(HOME_DIR $ENV{HOME})
 
+set(CMAKE_PREFIX_PATH "${HOME_DIR}/PyTorchCXX/libtorch" CACHE PATH "Path to libtorch")
 find_package(Torch REQUIRED)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS} -O3")
 
 find_package(ROOT REQUIRED COMPONENTS Core RIO Hist)
 include_directories(${ROOT_INCLUDE_DIRS})
