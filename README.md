@@ -4,8 +4,8 @@ Jet Event Tagging System for Tracking, Reconstruction, and Enhanced AI-based Mod
 Make sure to be inside ROOT environment.
 
 To compile with cmake:
- > mkdir build
- > cmake -DCMAKE_PREFIX_PATH=<path_to_libtorch> ..
+ > mkdir build \\
+ > cmake .. \\
  > make
 
 WORK IN PROGRESS

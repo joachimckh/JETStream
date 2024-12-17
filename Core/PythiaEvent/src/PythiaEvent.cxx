@@ -4,11 +4,11 @@ ClassImp(PythiaEvent);
 ClassImp(Jet);
 
 PythiaEvent::PythiaEvent()
-    : TObject(), eventNumber(0), px(0), py(0), pz(0), energy(0), jetFound(false) {};
+    : TObject(), eventNumber{0}, px{0}, py{0}, pz{0}, energy{0}, jetFound{false}, energyFraction{0} {};
 
 
 PythiaEvent::PythiaEvent(int evNumber)
-    : TObject(), eventNumber(evNumber), px(0), py(0), pz(0), energy(0), jetFound(false) {};
+    : TObject(), eventNumber{evNumber}, px{0}, py{0}, pz{0}, energy{0}, jetFound{false}, energyFraction{0} {};
 
 PythiaEvent::~PythiaEvent() {};
 
@@ -53,6 +53,26 @@ Jet PythiaEvent::getJet(JetType jetType) const
     break;
   case JetType::siscone:
     return sisconeJet;
+    break;
+  default:
+    break;
+  }
+};
+
+void PythiaEvent::setJetSubstructure(const int& cstind, const float& pt, const float& e, const int& flavor, const float& deltaR, const JetType jetType)
+{
+  switch (jetType) {
+  case JetType::antikt:
+    antiktJet.setJetConstituents(cstind, pt, e, flavor, deltaR);
+    break;
+  case JetType::kt:
+    ktJet.setJetConstituents(cstind, pt, e, flavor, deltaR);
+    break;
+  case JetType::cambridge:
+    cambridgeJet.setJetConstituents(cstind, pt, e, flavor, deltaR);
+    break;
+  case JetType::siscone:
+    sisconeJet.setJetConstituents(cstind, pt, e, flavor, deltaR);
     break;
   default:
     break;

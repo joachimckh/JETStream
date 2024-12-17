@@ -1,6 +1,6 @@
 #include "JTorchNet.hpp"
 
-namespace jetstream{
+namespace jetstream {
 namespace network {
 
 FNet::FNet(int64_t N, int64_t M)
@@ -12,5 +12,5 @@ torch::Tensor FNet::forward(torch::Tensor input) {
   return linear(input) + another_bias;
 }
 
-}
-}
+} // namespace network
+} // namespace jetstream

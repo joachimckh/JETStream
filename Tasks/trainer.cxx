@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
   //   loss.backward();
 
   //   // Update the weights using gradient descent
-  //   torch::optim::SGD optimizer(net.parameters(), /*lr=*/0.01);
+  //   torch::optim::Adam optimizer(net.parameters(), /*lr=*/0.01);
   //   optimizer.step();
   // }
 
