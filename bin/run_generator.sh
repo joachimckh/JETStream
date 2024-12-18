@@ -1,6 +1,6 @@
 #!/bin/bash
 nEvents=100
-file_name="../data/jets100_train.root"
+file_name="data/jets100_train.root"
 while [[ "$#" -gt 0 ]]; do
   case $1 in
     --nEvents) nEvents="$2"; shift ;; 
@@ -11,4 +11,4 @@ while [[ "$#" -gt 0 ]]; do
 done
 
 echo "Running generator with nEvents=${nEvents} and file_name=${file_name}"
-../build/Tasks/pythia_generator "${nEvents}" "${file_name}"
+./build/Tasks/pythia_generator "${nEvents}" "${file_name}"

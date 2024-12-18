@@ -92,14 +92,29 @@ int main(int argc, char *argv[]) {
       event->setJet(jet.pt(), jet.eta(), jet.phi(), jet.e(), jet.m(), 
                     JetType::antikt);
       jetEnergy += jet.e();
+
+      float leadingPt{-1.0f};
+      int motherPID{0};
       for (const auto &constituent : jet.constituents()) {
         int index = constituent.user_index();
         if (index < 0 || index >= pythia.event.size())
           continue;
         const Particle &part = pythia.event[index];
         float deltaR = jet.delta_R(constituent);
+        int motherIdx = part.mother1();
+        
+        if (constituent.pt() > leadingPt)
+        {
+          leadingPt = constituent.pt();
+          if (motherIdx >= 0)
+          {
+            const Particle &mother = pythia.event[motherIdx];
+            motherPID = mother.id();
+          }
+        }
         event->setJetSubstructure(jdx, index, constituent.pt(), constituent.e(), part.id(), deltaR, JetType::antikt);
       }
+      event->setLeadingMotherPID(motherPID, JetType::antikt);
       jdx++;
     }
     event->setEnergyFraction(jetEnergy / totalEnergy);

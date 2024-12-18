@@ -1,6 +1,6 @@
 #!/bin/bash
 nEpochs=1
-train_file="../data/jets100_train.root"
+train_file="data/jets100_train.root"
 while [[ "$#" -gt 0 ]]; do
   case $1 in
     --nEpochs) nEpochs="$2"; shift ;; 
@@ -11,4 +11,4 @@ while [[ "$#" -gt 0 ]]; do
 done
 
 echo "Running trainer with nEpochs=${nEpochs} and train file=${train_file}"
-../build/Tasks/train_network "${nEpochs}" "${train_file}"
+./build/Tasks/train_network "${nEpochs}" "${train_file}"

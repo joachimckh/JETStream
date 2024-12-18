@@ -4,11 +4,12 @@ ClassImp(PythiaEvent);
 ClassImp(Jet);
 
 PythiaEvent::PythiaEvent()
-    : TObject(), eventNumber{0}, px{0}, py{0}, pz{0}, energy{0}, jetFound{false}, energyFraction{0}, nJets{0} {};
-
+    : TObject(), eventNumber{0}, px{0}, py{0}, pz{0}, energy{0},
+      jetFound{false}, energyFraction{0}, nJets{0} {};
 
 PythiaEvent::PythiaEvent(int evNumber)
-    : TObject(), eventNumber{evNumber}, px{0}, py{0}, pz{0}, energy{0}, jetFound{false}, energyFraction{0}, nJets{0} {};
+    : TObject(), eventNumber{evNumber}, px{0}, py{0}, pz{0}, energy{0},
+      jetFound{false}, energyFraction{0}, nJets{0} {};
 
 PythiaEvent::~PythiaEvent() {};
 
@@ -39,8 +40,7 @@ void PythiaEvent::setJet(float pt, float eta, float phi, float energy,
   }
 };
 
-Jet PythiaEvent::getJet(JetType jetType) const
-{
+Jet PythiaEvent::getJet(JetType jetType) const {
   switch (jetType) {
   case JetType::antikt:
     return antiktJet;
@@ -59,8 +59,9 @@ Jet PythiaEvent::getJet(JetType jetType) const
   }
 };
 
-void PythiaEvent::setJetSubstructure(const int& jetid, const int& cstind, const float& pt, const float& e, const int& flavor, const float& deltaR, const JetType jetType)
-{
+void PythiaEvent::setJetSubstructure(const int &jetid, const int &cstind, const float &pt,
+                                     const float &e, const int &flavor,
+                                     const float &deltaR, const JetType jetType) {
   switch (jetType) {
   case JetType::antikt:
     antiktJet.setJetConstituents(jetid, cstind, pt, e, flavor, deltaR);
@@ -79,3 +80,22 @@ void PythiaEvent::setJetSubstructure(const int& jetid, const int& cstind, const 
   }
 };
 
+void PythiaEvent::setLeadingMotherPID(const int &pid, const JetType jetType)
+{
+  switch (jetType) {
+  case JetType::antikt:
+    antiktJet.setLeadingMotherPID(pid);
+    break;
+  case JetType::kt:
+    ktJet.setLeadingMotherPID(pid);
+    break;
+  case JetType::cambridge:
+    cambridgeJet.setLeadingMotherPID(pid);
+    break;
+  case JetType::siscone:
+    sisconeJet.setLeadingMotherPID(pid);
+    break;
+  default:
+    break;
+  }
+};
