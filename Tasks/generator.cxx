@@ -31,7 +31,6 @@ int main(int argc, char *argv[]) {
   pythia.readString("Beams:idB = 2212");    // proton
   pythia.readString("Beams:eCM = 13000.0"); // Center-of-mass energy at 13 TeV
   pythia.readString("HardQCD:all = on"); // Enable QCD processes to produce jets
-  pythia.readString("Next:numberShowEvent = 10000");
   pythia.init();
 
   auto tfile = new TFile(Form("%s", file_name), "RECREATE");
@@ -43,10 +42,14 @@ int main(int argc, char *argv[]) {
   constexpr double minJetPt{10.0};
 
   int jetsFound{0};
-  for (int iEvent{0}; iEvent < nEvents; iEvent++) {
+  int iEvent{0};
+  int totalJets{0};
+  // for (int iEvent{0}; iEvent < nEvents; iEvent++) {
+  while (jetsFound < nEvents) {
     if (!pythia.next())
       continue;
     event = new PythiaEvent(iEvent);
+    iEvent++;
 
     std::vector<PseudoJet> particles;
 
@@ -72,6 +75,8 @@ int main(int argc, char *argv[]) {
     std::vector<PseudoJet> jets = sorted_by_pt(cs.inclusive_jets(minJetPt));
     if (jets.size() > 0) {
       event->setJetFound(true);
+      event->setNJets(jets.size());
+      totalJets += jets.size();
       jetsFound++;
     } else {
       delete event;
@@ -82,6 +87,7 @@ int main(int argc, char *argv[]) {
     // NSubjettiness tau(1, jetDef);
     // double tau1 = tau.getTau(jet);
     double jetEnergy{0.0};
+    int jdx{0};
     for (const auto &jet : jets) {
       event->setJet(jet.pt(), jet.eta(), jet.phi(), jet.e(), jet.m(), 
                     JetType::antikt);
@@ -92,8 +98,9 @@ int main(int argc, char *argv[]) {
           continue;
         const Particle &part = pythia.event[index];
         float deltaR = jet.delta_R(constituent);
-        event->setJetSubstructure(index, constituent.pt(), constituent.e(), part.id(), deltaR, JetType::antikt);
+        event->setJetSubstructure(jdx, index, constituent.pt(), constituent.e(), part.id(), deltaR, JetType::antikt);
       }
+      jdx++;
     }
     event->setEnergyFraction(jetEnergy / totalEnergy);
 
@@ -106,6 +113,8 @@ int main(int argc, char *argv[]) {
 
   pythia.stat();
   std::cout << "Number of events with jets: " << jetsFound << "/" << nEvents << std::endl;
+  std::cout << "Total number of jets found: " << totalJets << std::endl;
+  std::cout << "Total number of events ran: " << iEvent << std::endl;
 
   return 0;
 }

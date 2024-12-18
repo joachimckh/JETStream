@@ -1,24 +1,31 @@
 #include <torch/torch.h>
 #include "JTorchNet.hpp"
+#include "JStreamData.hpp"
 
 
 int main(int argc, char *argv[]) {
 
   int nEpochs{100};
+  const char* train_path{};
   if (argc > 1) {
     nEpochs = std::atoi(argv[1]);
     if (nEpochs <= 0) {
       std::cerr << "Invalid number of epochs specified. Using default: 1\n";
       nEpochs = 1;
     }
-    //_ = argv[2];
+    train_path = argv[2];
   }
 
+  jetstream::data::JStreamData data{train_path};
 
-  jetstream::network::FNet net(4, 5);
-  for (const auto& p : net.parameters()) {
-    std::cout << p << std::endl;
-  }
+  auto tmp = data.get(0);
+
+  std::cout << tmp.data << std::endl;
+
+  // jetstream::network::FNet net(4, 5);
+  // for (const auto& p : net.parameters()) {
+  //   std::cout << p << std::endl;
+  // }
 
 
   // for (int i{0}; i < nEpochs; ++i)

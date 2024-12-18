@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Default parameter values
-nEvents=50000
-file_name="train.root"
+nEvents=100
+file_name="data/jets100_train.root"
 # Parse command-line arguments
 while [[ "$#" -gt 0 ]]; do
   case $1 in

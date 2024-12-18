@@ -46,3 +46,4 @@ build/
 # saved and legacy
 model/
 old/
+data/
