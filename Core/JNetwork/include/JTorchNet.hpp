@@ -11,8 +11,12 @@ struct FNet : torch::nn::Module {
 
   torch::Tensor forward(torch::Tensor input);
 
-  torch::nn::Linear linear;
-  torch::Tensor another_bias;
+  torch::nn::Linear inputLayer;
+  torch::nn::Linear layer1;
+  // torch::nn::Linear layer2;
+  torch::nn::Linear output;
+
+  torch::Tensor bias;
 };
 
 } // namespace network

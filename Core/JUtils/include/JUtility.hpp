@@ -9,13 +9,13 @@ enum class Composition {
   kMixed
 };
 
-Composition getComposition(const int &pdgID) {
+int getComposition(const int &pdgID) {
   if (pdgID == 21) {
-    return Composition::kGluon;
+    return 0;
   } else if (pdgID >= 1 &&  pdgID <= 6) {
-    return Composition::kQuark;
+    return 1;
   } else {
-    return Composition::kMixed;
+    return 2;
   }
 }
     

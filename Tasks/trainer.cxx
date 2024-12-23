@@ -18,14 +18,18 @@ int main(int argc, char *argv[]) {
 
   jetstream::data::JStreamData data{train_path};
 
-  auto tmp = data.get(0);
+  auto ex = data.get(10);
+  torch::Tensor tmp = ex.data;
+  torch::Tensor tar = ex.target;
+  std::cout << tmp << std::endl;
 
-  std::cout << tmp.data << std::endl;
+  std::cout << "tar " << tar << std::endl;
+  
 
-  // jetstream::network::FNet net(4, 5);
-  // for (const auto& p : net.parameters()) {
-  //   std::cout << p << std::endl;
-  // }
+  jetstream::network::FNet net(4, 5);
+  for (const auto& p : net.parameters()) {
+    std::cout << p << std::endl;
+  }
 
 
   // for (int i{0}; i < nEpochs; ++i)
