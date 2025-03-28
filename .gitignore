@@ -47,3 +47,7 @@ build/
 model/
 old/
 data/
+
+# python
+test/
+__pycache__/
